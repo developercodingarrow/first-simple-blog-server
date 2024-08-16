@@ -8,18 +8,27 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       require: [true, "Please Tell us your name!"],
+      lowercase: true,
     },
-
     email: {
       type: String,
       require: [true, "Please Provide your email!"],
       unique: true,
+      lowercase: true,
     },
     userName: {
       type: String,
       require: [true, "Please Provide Unique User Name!"],
       unique: true,
     },
+
+    userImg: {
+      url: {
+        type: String,
+        // default: "project-dummy-image.jpg",
+      },
+    },
+
     businessWebsite: {
       type: String,
     },
