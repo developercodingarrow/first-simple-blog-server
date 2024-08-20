@@ -5,6 +5,7 @@ const blogSchema = new mongoose.Schema(
   {
     blogTitle: {
       type: String,
+      default: "Untitled Blog", // Set default blogTitle
     },
     slug: {
       type: String,
@@ -61,13 +62,55 @@ const blogSchema = new mongoose.Schema(
       enum: [false, true],
       default: false,
     },
+
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
+    status: {
+      type: String,
+      enum: ["published", "draft"],
+      default: "draft",
+    },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
+// blogSchema.pre("save", function (next) {
+//   // Ensure blogTitle is set
+//   if (!this.blogTitle) {
+//     this.blogTitle = "Untitled Blog";
+//   }
+
+//   // Generate slug from blogTitle
+//   const baseSlug = slugify(this.blogTitle, {
+//     lower: true,
+//   });
+
+//   // Generate a random string with timestamp
+//   const randomString = new Date().getTime().toString(36).substring(7);
+
+//   // Combine baseSlug with random string
+//   this.slug = `${baseSlug}-${randomString}`;
+//   next();
+// });
+
+// Virtual Populate
+
 blogSchema.pre("save", function (next) {
-  // Check if blogTitle is provided before generating the slug
-  if (this.blogTitle) {
+  // Ensure blogTitle is set
+  if (!this.blogTitle) {
+    this.blogTitle = "Untitled Blog";
+  }
+
+  // Check if the slug starts with "untitled-" or the blogTitle has been modified
+  if (
+    this.isNew ||
+    this.slug.startsWith("untitled-") ||
+    this.isModified("blogTitle")
+  ) {
     // Generate slug from blogTitle
     const baseSlug = slugify(this.blogTitle, {
       lower: true,
@@ -78,14 +121,15 @@ blogSchema.pre("save", function (next) {
 
     // Combine baseSlug with random string
     this.slug = `${baseSlug}-${randomString}`;
-  } else {
-    // Generate a random default slug with timestamp when blogTitle is not provided
-    this.slug = slugify(new Date().getTime().toString(36).substring(7), {
-      lower: true,
-    });
   }
 
   next();
+});
+
+blogSchema.virtual("comments", {
+  ref: "BlogComments",
+  foreignField: "blog",
+  localField: "_id",
 });
 
 const Blogs = mongoose.model("Blogs", blogSchema);

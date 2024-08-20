@@ -96,6 +96,7 @@ exports.createOneWithImg = (Model, fieldName) => {
         caption,
         description,
       },
+      user: req.user._id,
     };
     // Find and update the document based on the provided slug
     const data = await Model.create(updateObject);

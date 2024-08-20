@@ -8,6 +8,7 @@ const userRoute = require("./routes/userRoute");
 const blogRoute = require("./routes/blogRoute");
 const blogDataRoute = require("./routes/admins/blogDataRoute");
 const tagRoute = require("./routes/tagRoute");
+const blogCommentRoute = require("./routes/blogCommentRoute");
 const cors = require("cors");
 
 // Midelwears
@@ -25,6 +26,7 @@ app.use("/api/v1/first-simple-blog/protected/admin-auth", adminsAuthRoute);
 app.use("/api/v1/first-simple-blog/private/users", userRoute);
 app.use("/api/v1/first-simple-blog/private/blog", blogRoute);
 app.use("/api/v1/first-simple-blog/private/tag", tagRoute);
+app.use("/api/v1/first-simple-blog/private/comment", blogCommentRoute);
 
 app.use(globalErrorHandler);
 module.exports = app;
