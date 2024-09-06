@@ -3,7 +3,10 @@ const router = express.Router();
 const AuthController = require("../../controllers/authController");
 const blogDeatilsController = require("../../controllers/adminController/blogDeatilsController");
 
-router.use(AuthController.protect, AuthController.restricTO("superAdmin"));
+router.use(
+  AuthController.protect,
+  AuthController.restricTO("user", "superAdmin")
+);
 
 router.get("/all-blogs", blogDeatilsController.allBlogs);
 

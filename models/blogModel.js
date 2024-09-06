@@ -72,32 +72,26 @@ const blogSchema = new mongoose.Schema(
       enum: ["published", "draft"],
       default: "draft",
     },
+    reportContent: {
+      type: String,
+      default: "no-action",
+    },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    rankingPoint: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// blogSchema.pre("save", function (next) {
-//   // Ensure blogTitle is set
-//   if (!this.blogTitle) {
-//     this.blogTitle = "Untitled Blog";
-//   }
-
-//   // Generate slug from blogTitle
-//   const baseSlug = slugify(this.blogTitle, {
-//     lower: true,
-//   });
-
-//   // Generate a random string with timestamp
-//   const randomString = new Date().getTime().toString(36).substring(7);
-
-//   // Combine baseSlug with random string
-//   this.slug = `${baseSlug}-${randomString}`;
-//   next();
-// });
-
-// Virtual Populate
+blogSchema.pre("save", function (next) {
+  this.blogTags.forEach((tag) => {
+    tag.tagSlug = slugify(tag.tagName, { lower: true });
+  });
+  next();
+});
 
 blogSchema.pre("save", function (next) {
   // Ensure blogTitle is set

@@ -49,7 +49,7 @@ blogCommentSchema.pre(/^find/, function (next) {
   })
     .populate({
       path: "commentBy",
-      select: "name",
+      select: "name userImg",
     })
     .populate({
       path: "replies",

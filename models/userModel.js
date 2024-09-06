@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
         type: String,
         // default: "project-dummy-image.jpg",
       },
+      altText: {
+        type: String,
+        default: "profile-pic",
+      },
     },
 
     businessWebsite: {

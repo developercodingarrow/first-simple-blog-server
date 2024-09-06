@@ -12,5 +12,7 @@ router.use(
 );
 
 router.post("/create-tag", tagController.createTag);
+router.post("/tag-vrification", tagController.tagverfification);
+router.delete("/delete-single-tag", tagController.deleteTag);
 
 module.exports = router;

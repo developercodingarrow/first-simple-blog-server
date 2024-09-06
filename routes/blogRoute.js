@@ -5,6 +5,7 @@ const blogController = require("../controllers/blogController");
 const { blogThumblinMidelwear } = require("../utils/multerUploadMiddleware");
 
 router.get("/get-blog/:slug", blogController.getSingleBlog);
+router.get("/fllterd-tag-blogs", blogController.getFilteredBlogs);
 
 router.use(
   AuthController.protect,
@@ -31,12 +32,16 @@ router.patch(
   blogThumblinMidelwear,
   blogController.updateBlogThumblin
 );
-router.post("/like", blogController.likeBlog);
-router.post("/unlike", blogController.unlikeBlog);
+
 router.post("/update-to-draft", blogController.updateBlogToDraft);
 router.post("/update-to-published", blogController.updateBlogToPublished);
+router.post("/report-content", blogController.repotContentAction);
 router.delete("/delete-blog", blogController.deleteBlogById);
 
 router.delete("/delete-blog-thumblin/:id", blogController.deleteBlogThumblin);
+
+// Refactor Routes
+router.post("/like", blogController.likeBlog);
+router.post("/unlike", blogController.unlikeBlog);
 
 module.exports = router;

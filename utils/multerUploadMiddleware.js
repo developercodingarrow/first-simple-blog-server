@@ -49,4 +49,16 @@ const blogThumbilUpload = createMulterUpload(
   true
 );
 
+// BLOGTHUMBLIN MIDELWEAR
 exports.blogThumblinMidelwear = blogThumbilUpload;
+
+// USER IMAGE STORAGE
+const userImgStorage = createMulterStorage(
+  `${__dirname}/../../client/public/usersProfileImg`,
+  "user-profile"
+);
+
+const userImgUpload = createMulterUpload(userImgStorage, "userImg", true);
+
+// USERIMG MIDELWEAR
+exports.userImgMidelwear = userImgUpload;

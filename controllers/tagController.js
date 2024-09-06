@@ -48,3 +48,7 @@ exports.createTags = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteTag = Factory.deleteOneByBody(Tags);
+
+exports.tagverfification = Factory.toggleBooleanField(Tags, "Verification");
