@@ -10,4 +10,5 @@ router.use(
   AuthController.restricTO("user", "superAdmin")
 );
 router.get("/all-users", userDetailController.allUsers);
+router.get("/user-detail/:slug", userDetailController.userDetail);
 module.exports = router;

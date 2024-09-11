@@ -18,6 +18,10 @@ const tagSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
 
     tagBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
