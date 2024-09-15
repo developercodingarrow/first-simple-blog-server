@@ -38,17 +38,37 @@ const signToken = (id) => {
   });
 };
 
-//---1) User Registration
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  const cookiesOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+    sameSite: "None",
+  };
+
+  if (process.env.NODE_ENV === "production") cookiesOptions.secure = true;
+  res.cookie("jwt", token, cookiesOptions);
+
+  res.status(statusCode).json({
+    status: "success",
+    apiFor: "Login",
+    token,
+    message: "login succes fully",
+    user, // user ki sari details  send nahi karni
+  });
+};
+
+//---1) USER REGISTRATION
 exports.userRegisteraion = catchAsync(async (req, res, next) => {
-  //1) Get Body Data
+  //1) GET DATA FROM BODY
   const { name, email, password, passwordConfirm } = req.body;
-
-  //2)  check the user input file isEmpity
+  //2)CHECK THE USER FIELD IS EMPTY
   if ((!name || !email || !password, !passwordConfirm)) {
-    return next(new AppError("Please Provide Required filed"));
+    return next(new AppError("Please Provide Required filed", 400));
   }
-
-  //3) Check user already exist or note
+  //3) CHECK USER ALREADY REGISTER
   const checkUser = await User.findOne({ email });
 
   //4) if user Not Register
@@ -61,6 +81,7 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
       name,
       email,
       password,
+      authBy: "form",
       otp: encryptedOtp,
       otpTimestamp: new Date(),
       otpgenerateToken: hashedToken,
@@ -83,10 +104,10 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: "success",
       apiFor: "register",
-      otp,
-      newUser,
       UrlToken,
       message: "OTP Sent Sucessfully check your mail",
+      otp, // otp send nahi karna
+      newUser, // new user send nahi karna
     });
   } else if (checkUser.isVerified === true) {
     return next(new AppError("you have already account Please Login", 401));
@@ -124,8 +145,6 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
 //---2) Verify OTP and activate user's account
 exports.verifyOtp = catchAsync(async (req, res, next) => {
   //1) Get user based on the UrlToken
-  console.log(req.body.otp);
-  console.log(req.params.token);
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -135,8 +154,6 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
 
   //3) Verify OTP and expiration time
   const currentTime = new Date();
-
-  console.log(currentTime);
 
   if (
     bcrypt.compare(req.body.otp, user.otp) &&
@@ -254,16 +271,7 @@ exports.userLogin = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorect email or password", 401));
   }
-
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: "success",
-    apiFor: "Login",
-    token,
-    message: "login succes fully",
-    user,
-  });
+  createSendToken(user, 200, res);
 });
 
 const client = new OAuth2Client(

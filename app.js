@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+var cookieParser = require("cookie-parser");
 const globalErrorHandler = require("./utils/errorController");
 const authRoute = require("./routes/authRoute");
 const userDataRoutes = require("./routes/admins/userDataRoutes");
@@ -13,8 +14,20 @@ const statsRoute = require("./routes/admins/statsRoute");
 const cors = require("cors");
 
 // Midelwears
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Frontend domain
+    credentials: true, // Allow credentials (cookies)
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  console.log("initial midelwer for test");
+  console.log("cookies---", req.cookies);
+  next();
+});
 
 app.use("/api/v1/first-simple-blog/auth", authRoute);
 

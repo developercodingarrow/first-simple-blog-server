@@ -9,5 +9,6 @@ router.use(
 );
 
 router.get("/all-blogs", blogDeatilsController.allBlogs);
+router.post("/blog-featured-toggle", blogDeatilsController.togglefeaturedBlog);
 
 module.exports = router;

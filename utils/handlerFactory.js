@@ -72,6 +72,7 @@ exports.userDeatils = (Model) => {
 // This function for Update one
 exports.updateOneByBody = (Model) => {
   return catchAsync(async (req, res, next) => {
+    console.log(req.body);
     const doc = await Model.findByIdAndUpdate(req.body._id, req.body, {
       new: true,
       runValidators: true,
@@ -84,6 +85,7 @@ exports.updateOneByBody = (Model) => {
     res.status(200).json({
       status: "success",
       result: doc,
+      message: "update user profile",
     });
   });
 };

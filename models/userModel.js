@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const slugify = require("slugify");
+const { type } = require("os");
 
 const userSchema = new mongoose.Schema(
   {
@@ -53,9 +54,15 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
 
+    authBy: {
+      type: String,
+      enum: ["googleAuth", "form"],
+      default: "form",
+    },
+
     role: {
       type: String,
-      enum: ["superAdmin", "admin", "employee", "user"],
+      enum: ["superAdmin", "admin", "employee", "user", "content-writer"],
       default: "user",
     },
     password: {
