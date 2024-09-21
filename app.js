@@ -29,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/v1/first-simple-blog/auth", authRoute);
+app.use("/api/v1/first-simple-blog/user-auth", authRoute);
 
 //  Realted to admin
 app.use("/api/v1/first-simple-blog/protected/users", userDataRoutes);

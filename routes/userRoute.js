@@ -8,12 +8,15 @@ router.use(
   AuthController.protect,
   AuthController.restricTO("user", "superAdmin")
 );
-router.get("/my-details-users/:slug", userController.userDetail);
+
 router.post("/update-user-profile", userController.updateUserProfile);
 router.patch(
   "/update-user-profile-pic",
   userImgMidelwear,
   userController.updateUserImg
 );
+
+// no use this api
+router.get("/my-details-users/:slug", userController.userDetail);
 
 module.exports = router;

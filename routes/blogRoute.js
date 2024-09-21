@@ -12,7 +12,7 @@ router.use(
   AuthController.restricTO("user", "superAdmin")
 );
 // GET SINGLE BLOG BY ID
-router.get("/get-single-blog/:blogId", blogController.getSingleBlogforUpdate);
+router.get("/get-single-blog/:slug", blogController.getSingleBlogforUpdate);
 router.get("/my-published-blogs", blogController.getAlPublishedlBlogsByUser);
 router.get("/my-draft-blogs", blogController.getAllDraftBlogsByUser);
 

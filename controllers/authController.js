@@ -274,17 +274,14 @@ exports.userLogin = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-const client = new OAuth2Client(
-  "575999030621-q9l875mbikilrm28q7sbj7ed3pf3kehq.apps.googleusercontent.com"
-);
+const client = new OAuth2Client(process.env.GOOGLE_AUTH_CLIENT_ID);
 
 exports.googleAuth = catchAsync(async (req, res, next) => {
   const { token } = req.body;
 
   const ticket = client.verifyIdToken({
     idToken: token,
-    audience:
-      "575999030621-q9l875mbikilrm28q7sbj7ed3pf3kehq.apps.googleusercontent.com",
+    audience: process.env.GOOGLE_AUTH_CLIENT_ID,
   });
 
   const { name, email, picture } = (await ticket).getPayload();
@@ -312,6 +309,8 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
       message: "Google Register sucesfully",
       token,
       user: newUser,
+      status: "success",
+      apiFor: "Login",
     });
   }
 });

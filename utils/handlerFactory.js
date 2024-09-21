@@ -69,27 +69,6 @@ exports.userDeatils = (Model) => {
   });
 };
 
-// This function for Update one
-exports.updateOneByBody = (Model) => {
-  return catchAsync(async (req, res, next) => {
-    console.log(req.body);
-    const doc = await Model.findByIdAndUpdate(req.body._id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!doc) {
-      return next(new AppError("NO Document found with this ID", 404));
-    }
-
-    res.status(200).json({
-      status: "success",
-      result: doc,
-      message: "update user profile",
-    });
-  });
-};
-
 exports.createOneWithImg = (Model, fieldName) => {
   return catchAsync(async (req, res, next) => {
     const {
@@ -234,7 +213,11 @@ exports.uplodsingleImg = (Model, fieldName) => {
 // This function for Delete one
 exports.deleteOneByBody = (Model) => {
   return catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndDelete(req.body._id);
+    const id = req.body.id;
+    if (!id) {
+      return res.status(400).json({ message: "Blog ID is required" });
+    }
+    const doc = await Model.findByIdAndDelete(id);
 
     if (!doc) {
       return next(new AppError("NO Document found with this ID", 404));
@@ -242,9 +225,8 @@ exports.deleteOneByBody = (Model) => {
 
     res.status(200).json({
       status: "success",
-      data: {
-        data: doc,
-      },
+      message: "your action is Deleted",
+      result: doc,
     });
   });
 };
@@ -269,6 +251,153 @@ exports.toggleBooleanField = (Model, fieldName) => {
       data: {
         [fieldName]: doc[fieldName],
       },
+    });
+  });
+};
+
+// refactor
+exports.getByUserAndModelStatus = (Model, status) => {
+  return async (req, res, next) => {
+    try {
+      const userId = req.user._id;
+      // Find all published blogs for the user
+      const doc = await Model.find({ user: userId, status: status });
+
+      if (!doc || doc.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No document found for this user...",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        count: doc.length,
+        status: "success",
+        result: doc,
+      });
+    } catch (error) {
+      console.error("Error fetching blogs by user:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  };
+};
+
+exports.updateStatus = (Model, status) => {
+  return async (req, res, next) => {
+    try {
+      const id = req.body.id;
+      // Find all published blogs for the user
+      const doc = await Model.findById(id);
+
+      if (!doc) {
+        return res.status(404).json({
+          success: false,
+          message: "doc not found",
+        });
+      }
+
+      // Update the doc status to "draft"
+      doc.status = status;
+      await doc.save();
+      res.status(200).json({
+        success: true,
+        status: "success",
+        result: doc,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  };
+};
+
+exports.updatefiled = (Model, filed) => {
+  return async (req, res, next) => {
+    try {
+      const { id, filedContent } = req.body;
+      // Find all published blogs for the user
+      const doc = await Model.findById(id);
+
+      if (!doc) {
+        return res.status(404).json({
+          success: false,
+          message: "doc not found",
+        });
+      }
+
+      doc[filed] = filedContent;
+      await doc.save();
+      res.status(200).json({
+        success: true,
+        status: "success",
+        message: "you action is updated",
+        result: doc,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  };
+};
+
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((key) => {
+    if (allowedFields.includes(key)) {
+      newObj[key] = obj[key];
+    }
+  });
+  return newObj;
+};
+
+exports.updateOneByFillterdFiled = (Model, allowedFields) => {
+  return catchAsync(async (req, res, next) => {
+    // Filter req.body to only include allowed fields
+    const filteredBody = filterObj(req.body, ...allowedFields);
+
+    const doc = await Model.findByIdAndUpdate(req.body._id, filteredBody, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!doc) {
+      return next(new AppError("No document found with this ID", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      result: doc,
+      message: "Profile updated successfully",
+    });
+  });
+};
+
+// This function for Update one
+exports.updateOneByBody = (Model) => {
+  return catchAsync(async (req, res, next) => {
+    console.log(req.body);
+
+    const doc = await Model.findByIdAndUpdate(req.body._id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!doc) {
+      return next(new AppError("NO Document found with this ID", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      result: doc,
+      message: "update user profile",
     });
   });
 };

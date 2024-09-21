@@ -5,6 +5,8 @@ const tagController = require("../controllers/tagController");
 
 // ALL TAGS
 router.get("/all-tags", tagController.getAllTags);
+router.get("/featured-tags", tagController.getFeaturedTags);
+router.get("/verified-tags", tagController.getFeaturedverifiedTags);
 
 router.use(
   AuthController.protect,
@@ -13,6 +15,7 @@ router.use(
 
 router.post("/create-tag", tagController.createTag);
 router.post("/tag-vrification", tagController.tagverfification);
+router.post("/tag-featured", tagController.tagFeatured);
 router.delete("/delete-single-tag", tagController.deleteTag);
 
 module.exports = router;
