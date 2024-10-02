@@ -156,17 +156,18 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
   const currentTime = new Date();
 
   if (
-    bcrypt.compare(req.body.otp, user.otp) &&
+    (await bcrypt.compare(req.body.otp, user.otp)) &&
     currentTime.getTime() - user.otpTimestamp.getTime() <= 6000000
   ) {
     user.otp = undefined;
     user.otpgenerateToken = undefined;
     user.isVerified = true;
+
     await user.save();
 
     res.status(200).json({
       status: "success",
-      apiFor: "opt-verification",
+      apiFor: "optverification",
       message: "your Registration sucesfully",
     });
   } else {
@@ -260,7 +261,7 @@ exports.userLogin = catchAsync(async (req, res, next) => {
 
   // check input filed isEmpity
   if (!email || !password) {
-    return next(new AppError("please provide the mendatories fileds"));
+    return next(new AppError("please provide the mendatories fileds", 400));
   }
 
   const user = await User.findOne({ email: email, isVerified: true }).select(
@@ -269,7 +270,7 @@ exports.userLogin = catchAsync(async (req, res, next) => {
 
   // check password
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError("Incorect email or password", 401));
+    return next(new AppError("Incorrect email or password", 401));
   }
   createSendToken(user, 200, res);
 });
@@ -369,3 +370,16 @@ exports.restricTO = (...roles) => {
     next();
   };
 };
+
+exports.logOut = catchAsync(async (req, res, next) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: process.env.NODE_ENV === "production", // Ensure secure is used only in production
+  });
+
+  res.status(200).json({
+    status: "success",
+    message: "Logged out successfully",
+  });
+});

@@ -42,6 +42,9 @@ exports.getOneBySlug = (Model) => {
 exports.getOneByID = (Model) => {
   return catchAsync(async (req, res, next) => {
     const doc = await Model.findOne({ _id: req.params.slug });
+    if (!doc) {
+      return next(new AppError("There Is no document found", 404));
+    }
     res.status(200).json({
       status: "success",
       total: doc.length,
@@ -248,6 +251,7 @@ exports.toggleBooleanField = (Model, fieldName) => {
 
     res.status(200).json({
       status: "success",
+      message: "Updates your action",
       data: {
         [fieldName]: doc[fieldName],
       },
@@ -398,6 +402,28 @@ exports.updateOneByBody = (Model) => {
       status: "success",
       result: doc,
       message: "update user profile",
+    });
+  });
+};
+
+exports.getByField = (Model, field, value, selectFields = "") => {
+  return catchAsync(async (req, res, next) => {
+    // Fetch all documents where the specified field is equal to the provided value
+    const docs = await Model.find({ [field]: value }).select(selectFields);
+
+    // If no documents are found
+    if (!docs.length) {
+      return res.status(404).json({
+        status: "fail",
+        message: `No documents found with ${field}: ${value}.`,
+      });
+    }
+
+    // Respond with the found documents
+    res.status(200).json({
+      status: "success",
+      results: docs.length,
+      data: docs,
     });
   });
 };

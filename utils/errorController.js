@@ -1,28 +1,32 @@
 const AppError = require("./appError");
 
+const handelValidationErrorDB = (err) => {
+  // Extract all validation error messages from the nested `errors` object
+  const errors = Object.values(err.errors).map((el) => `${el.message}`);
+  const message = `${errors.join(". ")}`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, res) => {
   console.log("sendErrorDev -- errorController");
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
-    stack: err.stack,
+    // stack: err.stack,
     error: err,
   });
 };
 
 const sendErrorProduction = (err, res) => {
-  console.log(err);
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
-      message: err.message,
-      operationError: "oprtational error",
+      message: err.message, // Ensure this is sent correctly
     });
   } else {
-    console.log("Error", err);
     res.status(500).json({
       status: "error",
-      message: "somthing went wrong",
+      message: "Something went very wrong...!",
     });
   }
 };
@@ -34,6 +38,10 @@ module.exports = (err, req, res, next) => {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = { ...err };
-    sendErrorProduction(err, res);
+    error.message = err.message;
+    if (err.name === "ValidationError") {
+      error = handelValidationErrorDB(err);
+    }
+    sendErrorProduction(error, res);
   }
 };

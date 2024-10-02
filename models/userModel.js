@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: [true, "Please Tell us your name!"],
       lowercase: true,
+      minlength: [3, "Name must be at least 3 characters long"],
     },
     email: {
       type: String,
@@ -21,12 +22,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: [true, "Please Provide Unique User Name!"],
       unique: true,
+      lowercase: true,
+      minlength: [3, "User Name must be at least 3 characters long"],
     },
 
     userImg: {
       url: {
         type: String,
-        // default: "project-dummy-image.jpg",
+        default: "profile-pic.webp",
       },
       altText: {
         type: String,

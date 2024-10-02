@@ -4,6 +4,9 @@ const AuthController = require("../controllers/authController");
 const userController = require("../controllers/userController");
 const { userImgMidelwear } = require("../utils/multerUploadMiddleware");
 
+router.get("/user-details/:slug", userController.userDetail);
+router.get("/user-blogs/:slug", userController.userPublishedBlogs);
+
 router.use(
   AuthController.protect,
   AuthController.restricTO("user", "superAdmin")
@@ -17,6 +20,6 @@ router.patch(
 );
 
 // no use this api
-router.get("/my-details-users/:slug", userController.userDetail);
+// router.get("/my-details-users/:slug", userController.userDetail);
 
 module.exports = router;

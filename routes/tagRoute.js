@@ -5,6 +5,7 @@ const tagController = require("../controllers/tagController");
 
 // ALL TAGS
 router.get("/all-tags", tagController.getAllTags);
+
 router.get("/featured-tags", tagController.getFeaturedTags);
 router.get("/verified-tags", tagController.getFeaturedverifiedTags);
 

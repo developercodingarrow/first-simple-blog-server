@@ -23,11 +23,11 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  console.log("initial midelwer for test");
-  console.log("cookies---", req.cookies);
-  next();
-});
+// app.use((req, res, next) => {
+//   // console.log("initial midelwer for test");
+//   // console.log("cookies---", req.cookies);
+//   next();
+// });
 
 app.use("/api/v1/first-simple-blog/user-auth", authRoute);
 

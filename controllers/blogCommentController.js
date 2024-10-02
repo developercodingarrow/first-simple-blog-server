@@ -1,7 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Comments = require("../models/blogcommentModel");
-
+const Factory = require("../utils/handlerFactory");
 // CREATE COMMENT ON BLOG
 exports.createComment = catchAsync(async (req, res, next) => {
   const { comment, blog } = req.body;
@@ -13,16 +13,6 @@ exports.createComment = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "Success",
     newComment,
-  });
-});
-
-exports.getAllComments = catchAsync(async (req, res, next) => {
-  const comments = await Comments.find();
-
-  res.status(200).json({
-    status: "Success",
-    total: comments.length,
-    comments,
   });
 });
 
@@ -101,3 +91,6 @@ exports.deleteCommentReply = catchAsync(async (req, res, next) => {
     message: "Reply deleted successfully",
   });
 });
+
+// Refactor
+exports.getAllComments = Factory.getAll(Comments);

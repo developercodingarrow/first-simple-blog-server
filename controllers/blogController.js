@@ -58,6 +58,7 @@ exports.updateBlogTag = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
+    message: "Update Your Tags Successfully",
     result: blog,
   });
 });
@@ -68,11 +69,15 @@ exports.updateBlogTag = catchAsync(async (req, res, next) => {
 exports.createBlog = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
   // Create a new blog instance with default values
+  if (!userId) {
+    return next(new AppError("Your are not logIn Please login to acces"), 401);
+  }
   const newBlog = await Blogs.create({
     user: userId,
     blogTitle: "Untitled Blog", // Default title
     metaDescription: "", // Default empty string for metaDescription
     blogDescreption: "",
+    status: "draft",
   });
 
   // Step 2: Update the user by adding the blog ID to the user's blogs array
@@ -106,15 +111,15 @@ exports.updateBlogContent = catchAsync(async (req, res, next) => {
   blog.blogTitle = blogTitle || blog.blogTitle;
   blog.metaDescription = metaDescription || blog.metaDescription;
   blog.blogDescreption = blogDescreption || blog.blogDescreption;
+  blog.status = "published";
 
   // Save the updated blog, which will trigger the pre('save') hook to update the slug if necessary
   await blog.save();
 
   res.status(200).json({
     status: "success",
-    data: {
-      blog,
-    },
+    message: "Update your content successfully",
+    result: blog,
   });
 });
 
@@ -195,7 +200,6 @@ exports.deleteBlogById = Factory.deleteOneByBody(Blogs);
 exports.getFilteredBlogs = async (req, res) => {
   try {
     const tag = req.query.tag;
-    console.log("tag---", tag);
     const pagelimit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * pagelimit;
@@ -248,6 +252,10 @@ exports.getSingleBlog = async (req, res) => {
       })
       .exec();
 
+    if (!blog) {
+      return next(new AppError("There is no Content Found"), 401);
+    }
+
     if (blog) {
       blog.viewCount += 1;
       blog.rankingPoint = blog.viewCount + blog.likes.length * 10;
@@ -262,3 +270,32 @@ exports.getSingleBlog = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getFeaturedblogByTags = catchAsync(async (req, res, next) => {
+  const slug = req.params.slug;
+  const filter = {
+    status: "published",
+    "blogTags.tagSlug": slug,
+  };
+
+  const blogs = await Blogs.find(filter)
+    .populate({
+      path: "comments",
+      select: "comment blog ",
+    })
+    .populate({
+      path: "user",
+      select: "name userName userImg",
+    })
+    .sort([
+      ["featured", -1],
+      ["rankingPoint", -1],
+    ])
+    .exec();
+
+  res.status(200).json({
+    status: "success",
+    total: blogs.length,
+    result: blogs,
+  });
+});

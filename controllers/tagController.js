@@ -3,24 +3,7 @@ const AppError = require("../utils/appError");
 const Factory = require("../utils/handlerFactory");
 const Tags = require("../models/tagsModel");
 
-// CREATE TAG
-exports.createTag = catchAsync(async (req, res, next) => {
-  const { tagName } = req.body;
-  const newTag = await Tags.create({
-    tagName,
-    tagBy: req.user._id,
-  });
-
-  res.status(200).json({
-    status: "success",
-    result: newTag,
-  });
-});
-
-// GET ALL TAG
-exports.getAllTags = Factory.getAll(Tags);
-
-// CREATE MULTIPLE TAGS
+// CREATE MULTIPLE TAGS this is not use at this time
 exports.createTags = catchAsync(async (req, res, next) => {
   const { tagNames } = req.body; // Expecting an array of tag names
 
@@ -49,52 +32,35 @@ exports.createTags = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTag = Factory.deleteOneByBody(Tags);
+exports.getAllTags = Factory.getAll(Tags);
+exports.getFeaturedTags = Factory.getByField(
+  Tags,
+  "featured",
+  true,
+  "tagName tagSlug"
+);
+
+exports.getFeaturedverifiedTags = Factory.getByField(
+  Tags,
+  "Verification",
+  true,
+  "tagName tagSlug"
+);
+
+exports.createTag = catchAsync(async (req, res, next) => {
+  const { tagName } = req.body;
+  const newTag = await Tags.create({
+    tagName,
+    tagBy: req.user._id,
+  });
+
+  res.status(200).json({
+    status: "success",
+    result: newTag,
+  });
+});
 
 exports.tagverfification = Factory.toggleBooleanField(Tags, "Verification");
 
 exports.tagFeatured = Factory.toggleBooleanField(Tags, "featured");
-
-exports.getFeaturedTags = catchAsync(async (req, res, next) => {
-  // Fetch all tags where 'featured' is set to true
-  const featuredTags = await Tags.find({ featured: true }).select(
-    "tagName tagSlug"
-  );
-
-  // If no featured tags are found
-  if (!featuredTags.length) {
-    return res.status(404).json({
-      status: "fail",
-      message: "No featured tags found.",
-    });
-  }
-
-  // Respond with the featured tags
-  res.status(200).json({
-    status: "success",
-    results: featuredTags.length,
-    tags: featuredTags,
-  });
-});
-
-exports.getFeaturedverifiedTags = catchAsync(async (req, res, next) => {
-  // Fetch all tags where 'featured' is set to true
-  const featuredTags = await Tags.find({ Verification: true });
-
-  // If no featured tags are found
-  if (!featuredTags.length) {
-    return res.status(404).json({
-      status: "fail",
-      message: "No featured tags found.",
-    });
-  }
-
-  // Respond with the featured tags
-  res.status(200).json({
-    status: "success",
-    results: featuredTags.length,
-    data: {
-      tags: featuredTags,
-    },
-  });
-});
+exports.deleteTag = Factory.deleteOneByBody(Tags);

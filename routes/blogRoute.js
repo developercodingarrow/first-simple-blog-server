@@ -6,6 +6,7 @@ const { blogThumblinMidelwear } = require("../utils/multerUploadMiddleware");
 
 router.get("/get-blog/:slug", blogController.getSingleBlog);
 router.get("/fllterd-tag-blogs", blogController.getFilteredBlogs);
+router.get("/get-blog-by-tag/:slug", blogController.getFeaturedblogByTags);
 
 router.use(
   AuthController.protect,

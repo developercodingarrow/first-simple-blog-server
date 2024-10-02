@@ -8,4 +8,5 @@ router.post("/forgot-password", AuthController.forgatePassword);
 router.post("/reset-password/:token", AuthController.resetPassword);
 router.post("/login", AuthController.userLogin);
 router.post("/google-login", AuthController.googleAuth);
+router.post("/logout", AuthController.logOut);
 module.exports = router;
