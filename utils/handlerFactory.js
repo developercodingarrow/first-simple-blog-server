@@ -189,9 +189,9 @@ exports.deleteSingleImage = (Model, fieldName, imagePath) => {
 exports.uplodsingleImg = (Model, fieldName) => {
   return catchAsync(async (req, res, next) => {
     const image = req.files[0].filename;
+
     console.log(req.files);
     const id = req.body.id;
-    // Create an object with the dynamically provided field name
     const updateObject = {
       [fieldName]: {
         url: image,

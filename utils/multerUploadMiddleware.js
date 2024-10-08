@@ -1,5 +1,7 @@
-const multer = require("multer");
 const path = require("path");
+const dotenv = require("dotenv");
+dotenv.config({ path: path.resolve(__dirname, "../config.env") });
+const multer = require("multer");
 
 // Function to create Multer storage
 const createMulterStorage = (destination, context) => {
@@ -29,17 +31,25 @@ const createMulterUpload = (
   return (req, res, next) => {
     upload(req, res, (err) => {
       if (err) {
-        console.error("Multer Error:", err); // Log any multer-related errors
-        return res.status(400).send("File upload error....");
+        console.error("Multer Error Details:", err); // Log any multer-related errors with details
+        return res
+          .status(400)
+          .json({ message: "File upload error", error: err.message });
       }
+
       next();
     });
   };
 };
 
+const clientPublicPath =
+  process.env.NODE_ENV === "production"
+    ? path.join(__dirname, "../new-first-simple-blog-front-end/public") // Production path
+    : path.join(__dirname, "../../client/public"); // Development path
+
 // Blog Thumblin Storage
 const blogThumblinStorage = createMulterStorage(
-  `${__dirname}/../../client/public/blogthumblin`,
+  `${clientPublicPath}/blogthumblin`,
   "blog-thumblin"
 );
 
@@ -53,8 +63,11 @@ const blogThumbilUpload = createMulterUpload(
 exports.blogThumblinMidelwear = blogThumbilUpload;
 
 // USER IMAGE STORAGE
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("Client Public Path:", clientPublicPath);
+
 const userImgStorage = createMulterStorage(
-  `${__dirname}/../../client/public/usersProfileImg`,
+  `${clientPublicPath}/usersProfileImg`,
   "user-profile"
 );
 

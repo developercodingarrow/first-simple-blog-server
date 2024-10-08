@@ -19,7 +19,6 @@ router.patch(
   userController.updateUserImg
 );
 
-// no use this api
-// router.get("/my-details-users/:slug", userController.userDetail);
+
 
 module.exports = router;
