@@ -44,8 +44,8 @@ const createMulterUpload = (
 
 const clientPublicPath =
   process.env.NODE_ENV === "production"
-    ? path.join(__dirname, "../new-first-simple-blog-front-end/public") // Production path
-    : path.join(__dirname, "../../client/public"); // Development path
+    ? path.join(__dirname, "../../new-first-simple-blog-front-end/public") // Production folder
+    : path.join(__dirname, "../../client/public"); // Development folder
 
 // Blog Thumblin Storage
 const blogThumblinStorage = createMulterStorage(
