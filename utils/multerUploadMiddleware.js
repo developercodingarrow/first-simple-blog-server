@@ -2,6 +2,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 dotenv.config({ path: path.resolve(__dirname, "../config.env") });
 const multer = require("multer");
+const fs = require("fs");
 
 // Function to create Multer storage
 const createMulterStorage = (destination, context) => {

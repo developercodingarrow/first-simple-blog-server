@@ -59,8 +59,6 @@ const userSchema = new mongoose.Schema(
 
     authBy: {
       type: String,
-      enum: ["googleAuth", "form"],
-      default: "form",
     },
 
     role: {

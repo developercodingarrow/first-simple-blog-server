@@ -211,6 +211,7 @@ exports.forgatePassword = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     apiFor: "forgatePassword",
+    message: "Reset link sent sucuufully on your mail",
     user,
     resetToken,
   });
@@ -227,7 +228,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 2) Get the user by hashedToken
   const user = await User.findOne({
     PasswordResetToken: hashedToken,
-    PasswordResetExpires: { $gt: Date.now() },
+    // PasswordResetExpires: { $gt: Date.now() },
   });
 
   //if user not found check user
@@ -278,6 +279,7 @@ exports.userLogin = catchAsync(async (req, res, next) => {
 const client = new OAuth2Client(process.env.GOOGLE_AUTH_CLIENT_ID);
 
 exports.googleAuth = catchAsync(async (req, res, next) => {
+  console.log("google auth call");
   const { token } = req.body;
 
   const ticket = client.verifyIdToken({
@@ -301,8 +303,12 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
       name,
       email,
-      userImg: picture,
+      userImg: {
+        url: picture, // Store the Google image URL here
+        altText: `${name}'s profile picture`,
+      },
       isVerified: true,
+      authBy: "googleAuth",
     });
 
     res.status(200).json({
