@@ -64,8 +64,6 @@ const blogThumbilUpload = createMulterUpload(
 exports.blogThumblinMidelwear = blogThumbilUpload;
 
 // USER IMAGE STORAGE
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("Client Public Path:", clientPublicPath);
 
 const userImgStorage = createMulterStorage(
   `${clientPublicPath}/usersProfileImg`,
@@ -76,3 +74,16 @@ const userImgUpload = createMulterUpload(userImgStorage, "userImg", true);
 
 // USERIMG MIDELWEAR
 exports.userImgMidelwear = userImgUpload;
+
+const mainbannerStorage = createMulterStorage(
+  `${clientPublicPath}/mainbanner`,
+  "main-banner"
+);
+
+const mainbannerUpload = createMulterUpload(
+  mainbannerStorage,
+  "bannerImg",
+  true
+);
+
+exports.mainBannerMidelwear = mainbannerUpload;
