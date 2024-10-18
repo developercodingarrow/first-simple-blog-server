@@ -27,7 +27,7 @@ exports.deleteBlogThumblin = Factory.deleteSingleImage(
 
 exports.updateBlogTag = catchAsync(async (req, res, next) => {
   const { _id } = req.params;
-  console.log(req.body);
+
   const { tagName } = req.body;
 
   const blog = await Blogs.findById(_id);

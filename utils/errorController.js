@@ -8,7 +8,6 @@ const handelValidationErrorDB = (err) => {
 };
 
 const sendErrorDev = (err, res) => {
-  console.log("sendErrorDev -- errorController");
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,

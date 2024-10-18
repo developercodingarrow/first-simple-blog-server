@@ -17,7 +17,6 @@ exports.createOne = (Model) => {
 // This function for GET ALL
 exports.getAll = (Model) => {
   return catchAsync(async (req, res, next) => {
-    console.log("get all");
     const doc = await Model.find();
     res.status(200).json({
       status: "success",
@@ -84,7 +83,7 @@ exports.createOneWithImg = (Model, fieldName) => {
       description,
     } = req.body;
     const image = req.files[0].filename;
-    console.log(req.files);
+
     const id = req.params._id;
     // Create an object with the dynamically provided field name
     const updateObject = {
@@ -118,7 +117,7 @@ exports.updateImageByIdAndField = (Model, fieldName) => {
   return catchAsync(async (req, res, next) => {
     const { alternativeText, title, caption, description } = req.body;
     const image = req.files[0].filename;
-    console.log(req.files);
+
     const id = req.params._id;
     // Create an object with the dynamically provided field name
     const updateObject = {
@@ -173,7 +172,6 @@ exports.deleteSingleImage = (Model, fieldName, imagePath) => {
 
     try {
       await fs.unlink(imagePathToDelete);
-      console.log(`Image deleted: ${deletedImage.url}`);
     } catch (error) {
       console.error(`Error deleting image: ${error.message}`);
     }
@@ -190,7 +188,6 @@ exports.uplodsingleImg = (Model, fieldName) => {
   return catchAsync(async (req, res, next) => {
     const image = req.files[0].filename;
 
-    console.log(req.files);
     const id = req.body.id;
     const updateObject = {
       [fieldName]: {
@@ -387,8 +384,6 @@ exports.updateOneByFillterdFiled = (Model, allowedFields) => {
 // This function for Update one
 exports.updateOneByBody = (Model) => {
   return catchAsync(async (req, res, next) => {
-    console.log(req.body);
-
     const doc = await Model.findByIdAndUpdate(req.body._id, req.body, {
       new: true,
       runValidators: true,

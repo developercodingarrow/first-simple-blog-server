@@ -185,7 +185,7 @@ exports.forgatePassword = catchAsync(async (req, res, next) => {
   }
   // Check user is exist on our data base
   const user = await User.findOne({ email });
-  console.log(user.email);
+
   if (!user) {
     return next(
       new AppError(
@@ -279,7 +279,6 @@ exports.userLogin = catchAsync(async (req, res, next) => {
 const client = new OAuth2Client(process.env.GOOGLE_AUTH_CLIENT_ID);
 
 exports.googleAuth = catchAsync(async (req, res, next) => {
-  console.log("google auth call");
   const { token } = req.body;
 
   const ticket = client.verifyIdToken({
@@ -288,10 +287,9 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
   });
 
   const { name, email, picture } = (await ticket).getPayload();
-  console.log(picture);
 
   const checkUser = await User.findOne({ email });
-  console.log(checkUser);
+
   if (checkUser) {
     res.status(200).json({
       status: "success",
