@@ -93,22 +93,31 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
       "host"
     )}/api/v1/users/verify-otp/${UrlToken}`;
 
-    // 6) Send Email To user Email ID
-    await sendEmail({
-      email: email,
-      subject: "User Registration",
-      message: `<h1>This is your one Time  (OTP) ${otp} for registration please use OTP <h1> <br>
-                  click on this Link ${otpverificationURL} and Verify the OTP`,
-    });
+    try {
+      await sendEmail({
+        email: email,
+        subject: "User Registration",
+        message: `<h1>This is your one-time OTP: ${otp} for registration. Please use the OTP to verify your account.</h1>
+                  <br>Click on this link to verify: <a href="${otpverificationURL}">Verify OTP</a>`,
+      });
 
-    res.status(200).json({
-      status: "success",
-      apiFor: "register",
-      UrlToken,
-      message: "OTP Sent Sucessfully check your mail",
-      otp, // otp send nahi karna
-      newUser, // new user send nahi karna
-    });
+      res.status(200).json({
+        status: "success",
+        apiFor: "register",
+        message: "OTP sent successfully, please check your email.",
+        UrlToken,
+        // Don't send OTP or newUser details in the response
+      });
+    } catch (error) {
+      // Handle error in case the email fails to send
+      console.log(error);
+      return next(
+        new AppError(
+          "There was an error sending the email. Try again later.",
+          500
+        )
+      );
+    }
   } else if (checkUser.isVerified === true) {
     return next(new AppError("you have already account Please Login", 401));
   } else if (checkUser.isVerified === false) {
@@ -125,20 +134,31 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
       "host"
     )}/api/v1/saranshrealtorsindia/users/verify-otp/${UrlToken}`;
 
-    await sendEmail({
-      email: email,
-      subject: "User Registration",
-      message: `<h1>This is your one Time  (OTP) ${otp} for registration please use OTP <h1> <br>
-                  click on this Link ${otpverificationURL} and Verify the OTP`,
-    });
+    try {
+      await sendEmail({
+        email: email,
+        subject: "User Registration",
+        message: `<h1>This is your one-time OTP: ${otp} for registration. Please use the OTP to verify your account.</h1>
+                  <br>Click on this link to verify: <a href="${otpverificationURL}">Verify OTP</a>`,
+      });
 
-    res.status(200).json({
-      status: "success",
-      apiFor: "register",
-      otp,
-      UrlToken,
-      message: "OTP Sent Sucessfully check your mail",
-    });
+      res.status(200).json({
+        status: "success",
+        apiFor: "register",
+        message: "OTP sent successfully, please check your email.",
+        UrlToken,
+        // Don't send OTP or newUser details in the response
+      });
+    } catch (error) {
+      // Handle error in case the email fails to send
+      console.log(error);
+      return next(
+        new AppError(
+          "There was an error sending the email. Try again later.",
+          500
+        )
+      );
+    }
   }
 });
 
