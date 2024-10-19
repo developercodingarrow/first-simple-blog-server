@@ -130,9 +130,7 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
     checkUser.otp = encryptedOtp;
     await checkUser.save({ validateBeforeSave: false });
 
-    const otpverificationURL = `http:://${req.get(
-      "host"
-    )}/api/v1/saranshrealtorsindia/users/verify-otp/${UrlToken}`;
+    const otpverificationURL = `https://pinbuzzers.com/opt-verification/${UrlToken}`;
 
     try {
       await sendEmail({
