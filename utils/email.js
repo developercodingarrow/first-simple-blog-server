@@ -13,7 +13,7 @@ const sendEmail = async (options) => {
   // Differentiate between development and production environments
 
   const mailOptions = {
-    from: '"pinbuzzers 👻" <info@pinbuzzers.com>', // sender address
+    from: '"pinbuzzers 👻" <pinbuzzers@gmail.com>', // sender address
     to: options.email,
     subject: options.subject,
     // text: options.message,
