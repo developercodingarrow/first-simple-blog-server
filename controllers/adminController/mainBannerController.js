@@ -18,15 +18,17 @@ exports.getMainBanner = catchAsync(async (req, res, next) => {
 
 exports.publishBanner = catchAsync(async (req, res, next) => {
   const image = req.files[0].filename;
+
   const doc = await MainBanner.create({
     bannerImg: {
       url: image,
       altText: req.files[0].originalname,
     },
   });
+
   res.status(200).json({
     status: "success",
-    message: "Update Your Tags Successfully",
+    message: "Publsih your image succesfully",
     result: doc,
   });
 });

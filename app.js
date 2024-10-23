@@ -12,6 +12,7 @@ const tagRoute = require("./routes/tagRoute");
 const blogCommentRoute = require("./routes/blogCommentRoute");
 const statsRoute = require("./routes/admins/statsRoute");
 const mainBannerRoute = require("./routes/admins/mainBannerRoute");
+const contactRoute = require("./routes/contactRoute");
 const cors = require("cors");
 
 // Midelwears
@@ -43,6 +44,7 @@ app.use("/api/v1/first-simple-blog/private/tag", tagRoute);
 app.use("/api/v1/first-simple-blog/private/comment", blogCommentRoute);
 
 app.use("/api/v1/first-simple-blog/stats", statsRoute);
+app.use("/api/v1/first-simple-blog/contact", contactRoute);
 
 app.use(globalErrorHandler);
 module.exports = app;
