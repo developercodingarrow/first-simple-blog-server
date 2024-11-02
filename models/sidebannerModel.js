@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const mainBannerSchema = new mongoose.Schema(
+const sideBannerSchema = new mongoose.Schema(
   {
     bannerImg: {
       url: {
@@ -20,6 +20,6 @@ const mainBannerSchema = new mongoose.Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-const MainBanner = mongoose.model("MainBanner", mainBannerSchema);
+const SideBanner = mongoose.model("SideBanner", sideBannerSchema);
 
-module.exports = MainBanner;
+module.exports = SideBanner;

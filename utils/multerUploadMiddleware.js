@@ -87,3 +87,16 @@ const mainbannerUpload = createMulterUpload(
 );
 
 exports.mainBannerMidelwear = mainbannerUpload;
+
+const sidebannerStorage = createMulterStorage(
+  `${clientPublicPath}/sideBanner`,
+  "side-banner"
+);
+
+const sidebannerUpload = createMulterUpload(
+  sidebannerStorage,
+  "bannerImg",
+  true
+);
+
+exports.sideBannerMidelwear = sidebannerUpload;

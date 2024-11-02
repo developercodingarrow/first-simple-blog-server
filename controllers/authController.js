@@ -309,12 +309,7 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
   const checkUser = await User.findOne({ email });
 
   if (checkUser) {
-    res.status(200).json({
-      status: "success",
-      message: "Google Register Login",
-      user: checkUser,
-      token,
-    });
+    createSendToken(checkUser, 200, res);
   } else {
     const newUser = await User.create({
       name,
@@ -327,14 +322,7 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
       authBy: "googleAuth",
     });
 
-    res.status(200).json({
-      status: "success",
-      message: "Google Register sucesfully",
-      token,
-      user: newUser,
-      status: "success",
-      apiFor: "Login",
-    });
+    createSendToken(newUser, 200, res);
   }
 });
 

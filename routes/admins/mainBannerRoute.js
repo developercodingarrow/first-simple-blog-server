@@ -16,4 +16,6 @@ router.post(
   mainBannerController.publishBanner
 );
 
+router.patch("/update-main-banner-url", mainBannerController.updateBannerUrl);
+
 module.exports = router;

@@ -12,6 +12,7 @@ const tagRoute = require("./routes/tagRoute");
 const blogCommentRoute = require("./routes/blogCommentRoute");
 const statsRoute = require("./routes/admins/statsRoute");
 const mainBannerRoute = require("./routes/admins/mainBannerRoute");
+const SideBannerRoute = require("./routes/admins/sideBannerRooute");
 const contactRoute = require("./routes/contactRoute");
 const cors = require("cors");
 
@@ -36,6 +37,7 @@ app.use("/api/v1/first-simple-blog/protected/users", userDataRoutes);
 app.use("/api/v1/first-simple-blog/protected/blog", blogDataRoute);
 app.use("/api/v1/first-simple-blog/protected/admin-auth", adminsAuthRoute);
 app.use("/api/v1/first-simple-blog/admin-auth/main-banner", mainBannerRoute);
+app.use("/api/v1/first-simple-blog/admin-auth/side-banner", SideBannerRoute);
 
 // Realted To Users
 app.use("/api/v1/first-simple-blog/private/users", userRoute);

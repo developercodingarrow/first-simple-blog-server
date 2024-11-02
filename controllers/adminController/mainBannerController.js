@@ -32,3 +32,14 @@ exports.publishBanner = catchAsync(async (req, res, next) => {
     result: doc,
   });
 });
+
+exports.updateBannerUrl = catchAsync(async (req, res, next) => {
+  const { _id, bannerLink } = req.body;
+
+  const banner = await MainBanner.findByIdAndUpdate(_id, { bannerLink });
+
+  res.status(200).json({
+    status: "success",
+    message: "url update sucesfully",
+  });
+});
