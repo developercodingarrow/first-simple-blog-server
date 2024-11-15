@@ -193,7 +193,6 @@ exports.getAllDraftBlogsByUser = Factory.getByUserAndModelStatus(
 exports.updateBlogToDraft = Factory.updateStatus(Blogs, "draft");
 exports.updateBlogToPublished = Factory.updateStatus(Blogs, "published");
 
-exports.repotContentAction = Factory.updatefiled(Blogs, "reportContent");
 exports.deleteBlogById = Factory.deleteOneByBody(Blogs);
 
 // SSR API FOR FILLTERED BLOGD
@@ -207,6 +206,7 @@ exports.getFilteredBlogs = async (req, res) => {
     // Build the filter object based on the provided tag
     const filter = {
       status: "published",
+      reportContent: "no-action",
     };
 
     if (tag) {
@@ -297,5 +297,27 @@ exports.getFeaturedblogByTags = catchAsync(async (req, res, next) => {
     status: "success",
     total: blogs.length,
     result: blogs,
+  });
+});
+
+exports.repotContentAction = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { id, filedContent } = req.body;
+
+  // Find the blog by ID and update it, returning the updated document
+  const doc = await Blogs.findByIdAndUpdate(
+    id,
+    {
+      reportAction: filedContent,
+      reportedBy: userId,
+    },
+    { new: true } // This option returns the updated document
+  );
+
+  res.status(201).json({
+    success: true,
+    status: "success",
+    message: "Your action has been updated",
+    result: doc,
   });
 });

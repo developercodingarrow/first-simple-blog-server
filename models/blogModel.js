@@ -73,8 +73,19 @@ const blogSchema = new mongoose.Schema(
       enum: ["published", "draft"],
       default: "draft",
     },
+
+    reportAction: {
+      type: String,
+      enum: ["Harassment", "Rules Violation", "Spam", "no-action"],
+      default: "no-action",
+    },
+    reportedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     reportContent: {
       type: String,
+      enum: ["moderation_review", "no-action", "suspension"],
       default: "no-action",
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

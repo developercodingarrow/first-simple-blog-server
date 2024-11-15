@@ -214,8 +214,9 @@ exports.uplodsingleImg = (Model, fieldName) => {
 exports.deleteOneByBody = (Model) => {
   return catchAsync(async (req, res, next) => {
     const id = req.body.id;
+    console.log(id);
     if (!id) {
-      return res.status(400).json({ message: "Blog ID is required" });
+      return res.status(400).json({ message: "ID is required" });
     }
     const doc = await Model.findByIdAndDelete(id);
 
